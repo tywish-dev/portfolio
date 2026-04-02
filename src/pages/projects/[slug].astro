@@ -1,0 +1,117 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import SiteHeader from "@/components/layout/SiteHeader.astro";
+import SiteFooter from "@/components/layout/SiteFooter.astro";
+import { projects, getProjectBySlug } from "@/data/projects";
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const project = slug ? getProjectBySlug(slug) : undefined;
+
+if (!project) {
+  return Astro.redirect("/");
+}
+
+const pageTitle = `${project.title} — Samet Yılmaz`;
+const pageDescription = project.summary;
+const dualRepo = project.repos.length > 1;
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <SiteHeader />
+  <main class="px-4 pb-20 pt-24 sm:px-6 sm:pt-28 lg:px-8">
+    <article class="mx-auto max-w-3xl">
+      <nav class="mb-10 text-sm text-muted-foreground" aria-label="Breadcrumb">
+        <a href="/" class="transition-colors hover:text-foreground">Home</a>
+        <span class="mx-2 text-border" aria-hidden>/</span>
+        <a href="/#projects" class="transition-colors hover:text-foreground">
+          Projects
+        </a>
+        <span class="mx-2 text-border" aria-hidden>/</span>
+        <span class="text-foreground">{project.title}</span>
+      </nav>
+
+      <p class="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+        {dualRepo ? "Full-stack · multiple repos" : "Project"}
+      </p>
+      <h1 class="mt-2 text-4xl font-semibold tracking-tight sm:text-5xl">
+        {project.title}
+      </h1>
+      <p class="mt-4 text-lg text-muted-foreground">{project.summary}</p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        {
+          project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+              class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
+            >
+              Live demo
+            </a>
+          )
+        }
+        {
+          project.repos.map((repo) => (
+            <a
+              href={repo.url}
+              target="_blank"
+              rel="noreferrer noopener"
+              class="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
+            >
+              {repo.label} · GitHub
+            </a>
+          ))
+        }
+      </div>
+
+      <div class="mt-12 space-y-4 text-base leading-relaxed text-muted-foreground">
+        <p>{project.description}</p>
+      </div>
+
+      <section class="mt-12" aria-labelledby="highlights-heading">
+        <h2
+          id="highlights-heading"
+          class="text-sm font-semibold uppercase tracking-wider text-foreground"
+        >
+          Highlights
+        </h2>
+        <ul class="mt-4 list-inside list-disc space-y-2 text-muted-foreground">
+          {project.highlights.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <section class="mt-12" aria-labelledby="tech-heading">
+        <h2
+          id="tech-heading"
+          class="text-sm font-semibold uppercase tracking-wider text-foreground"
+        >
+          Tech stack
+        </h2>
+        <ul class="mt-4 flex flex-wrap gap-2">
+          {
+            project.tech.map((t) => (
+              <li class="rounded-full border border-border bg-secondary/60 px-3 py-1 font-mono text-xs text-muted-foreground">
+                {t}
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <p class="mt-14 text-sm text-muted-foreground">
+        <a
+          href="/#projects"
+          class="font-medium text-primary underline-offset-4 hover:underline"
+        >
+          ← Back to all projects
+        </a>
+      </p>
+    </article>
+  </main>
+  <SiteFooter />
+</Layout>

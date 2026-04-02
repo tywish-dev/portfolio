@@ -78,13 +78,13 @@ export function HeroSection() {
           className="mt-10 flex flex-wrap items-center justify-center gap-3"
         >
           <Button size="lg" asChild>
-            <a href="#projects">
+            <a href="/#projects">
               View projects
               <ArrowRight className="size-4" aria-hidden />
             </a>
           </Button>
           <Button size="lg" variant="outline" asChild>
-            <a href="mailto:hello@sametyilmaz.tech">
+            <a href="mailto:sametyilmaz621@gmail.com">
               <Mail className="size-4" aria-hidden />
               Get in touch
             </a>
@@ -110,7 +110,7 @@ export function HeroSection() {
           className="mt-10 flex justify-center gap-4 text-muted-foreground"
         >
           <a
-            href="https://github.com"
+            href="https://github.com/tywish-dev"
             className="transition-colors hover:text-foreground"
             target="_blank"
             rel="noreferrer noopener"
@@ -119,7 +119,7 @@ export function HeroSection() {
             <Github className="size-5" />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/samet-yilmaz-dev/"
             className="transition-colors hover:text-foreground"
             target="_blank"
             rel="noreferrer noopener"

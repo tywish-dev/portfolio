@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ExternalLink } from "lucide-react";
+import { ArrowRight, Layers } from "lucide-react";
 
 import {
   Card,
@@ -8,27 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-const placeholders = [
-  {
-    title: "Project one",
-    description:
-      "Replace this card with a real project: problem, stack, and outcome.",
-    href: "#",
-  },
-  {
-    title: "Project two",
-    description:
-      "Link to the live site, GitHub, or a case study—whatever tells the story best.",
-    href: "#",
-  },
-  {
-    title: "Project three",
-    description:
-      "Use Astro for speed and sprinkle React islands where you need motion or interactivity.",
-    href: "#",
-  },
-];
+import { projects } from "@/data/projects";
 
 const listVariants = {
   hidden: { opacity: 0 },
@@ -62,8 +42,8 @@ export function ProjectsSection() {
             Selected work
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Swap these placeholders for your shipped products, open source, or
-            freelance builds.
+            Full-stack apps, mobile clients, and real-time products—each with
+            its own case page, repo links, and stack notes.
           </p>
         </div>
 
@@ -74,28 +54,40 @@ export function ProjectsSection() {
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
         >
-          {placeholders.map((project) => (
-            <motion.li key={project.title} variants={cardVariants}>
-              <Card className="group h-full border-border/80 bg-card/80 transition-colors hover:border-primary/40">
-                <CardHeader>
-                  <CardTitle className="text-lg">{project.title}</CardTitle>
-                  <CardDescription>{project.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <a
-                    href={project.href}
-                    className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-                  >
-                    Details
-                    <ExternalLink
-                      className="size-3.5 opacity-70 transition-opacity group-hover:opacity-100"
-                      aria-hidden
-                    />
-                  </a>
-                </CardContent>
-              </Card>
-            </motion.li>
-          ))}
+          {projects.map((project) => {
+            const multiRepo = project.repos.length > 1;
+            return (
+              <motion.li key={project.slug} variants={cardVariants}>
+                <Card className="group flex h-full flex-col border-border/80 bg-card/80 transition-colors hover:border-primary/40">
+                  <CardHeader className="flex-1">
+                    <div className="mb-2 flex items-center gap-2">
+                      {multiRepo ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/50 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                          <Layers className="size-3" aria-hidden />
+                          Frontend + backend
+                        </span>
+                      ) : null}
+                    </div>
+                    <CardTitle className="text-lg">{project.title}</CardTitle>
+                    <CardDescription>{project.summary}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <a
+                      href={`/projects/${project.slug}`}
+                      data-astro-prefetch
+                      className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                    >
+                      View project
+                      <ArrowRight
+                        className="size-3.5 opacity-70 transition-opacity group-hover:opacity-100"
+                        aria-hidden
+                      />
+                    </a>
+                  </CardContent>
+                </Card>
+              </motion.li>
+            );
+          })}
         </motion.ul>
       </div>
     </section>
