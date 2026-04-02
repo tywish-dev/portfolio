@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Github, Linkedin, Mail } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { SITE } from "@/data/site";
 
 const container = {
   hidden: { opacity: 0 },
@@ -84,7 +85,7 @@ export function HeroSection() {
             </a>
           </Button>
           <Button size="lg" variant="outline" asChild>
-            <a href="mailto:sametyilmaz621@gmail.com">
+            <a href={`mailto:${SITE.email}`}>
               <Mail className="size-4" aria-hidden />
               Get in touch
             </a>
@@ -110,7 +111,7 @@ export function HeroSection() {
           className="mt-10 flex justify-center gap-4 text-muted-foreground"
         >
           <a
-            href="https://github.com/tywish-dev"
+            href={SITE.github}
             className="transition-colors hover:text-foreground"
             target="_blank"
             rel="noreferrer noopener"
@@ -119,7 +120,7 @@ export function HeroSection() {
             <Github className="size-5" />
           </a>
           <a
-            href="https://www.linkedin.com/in/samet-yilmaz-dev/"
+            href={SITE.linkedin}
             className="transition-colors hover:text-foreground"
             target="_blank"
             rel="noreferrer noopener"

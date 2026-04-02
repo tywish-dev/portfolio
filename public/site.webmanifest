@@ -1,0 +1,19 @@
+{
+  "name": "Samet Yılmaz — Portfolio",
+  "short_name": "Samet Yılmaz",
+  "description": "Portfolio and projects by Samet Yılmaz — sametyilmaz.tech",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "background_color": "#0a0a0c",
+  "theme_color": "#0a0a0c",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}

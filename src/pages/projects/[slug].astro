@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import SiteHeader from "@/components/layout/SiteHeader.astro";
 import SiteFooter from "@/components/layout/SiteFooter.astro";
+import { SITE, buildProjectJsonLd } from "@/data/site";
 import { projects, getProjectBySlug } from "@/data/projects";
 
 export function getStaticPaths() {
@@ -18,11 +19,26 @@ if (!project) {
 const pageTitle = `${project.title} — Samet Yılmaz`;
 const pageDescription = project.summary;
 const dualRepo = project.repos.length > 1;
+
+const pageCanonicalHref = new URL(
+  Astro.url.pathname,
+  Astro.site ?? new URL(SITE.url),
+).href;
+const projectJsonLd = buildProjectJsonLd(project, pageCanonicalHref);
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  ogType="article"
+  extraJsonLd={projectJsonLd}
+>
   <SiteHeader />
-  <main class="px-4 pb-20 pt-24 sm:px-6 sm:pt-28 lg:px-8">
+  <main
+    id="main-content"
+    tabindex="-1"
+    class="px-4 pb-20 pt-24 sm:px-6 sm:pt-28 lg:px-8"
+  >
     <article class="mx-auto max-w-3xl">
       <nav class="mb-10 text-sm text-muted-foreground" aria-label="Breadcrumb">
         <a href="/" class="transition-colors hover:text-foreground">Home</a>

@@ -1,17 +1,38 @@
 ---
 import "@/styles/global.css";
+import { SITE, buildDefaultJsonLd } from "@/data/site";
 
 interface Props {
   title?: string;
   description?: string;
+  /** Absolute URL to preview image; defaults to /og-image.png on your domain */
+  image?: string;
+  ogType?: "website" | "article";
+  /** Use on 404 and other pages that must not be indexed */
+  noindex?: boolean;
+  /** Merged as a second JSON-LD script (e.g. BreadcrumbList on project pages) */
+  extraJsonLd?: Record<string, unknown>;
 }
 
 const {
-  title = "Samet Yılmaz — Portfolio",
-  description = "Portfolio and projects by Samet Yılmaz — sametyilmaz.tech",
+  title = SITE.defaultTitle,
+  description = SITE.defaultDescription,
+  image,
+  ogType = "website",
+  noindex = false,
+  extraJsonLd,
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const siteBase = Astro.site ?? new URL(SITE.url);
+const canonical = new URL(Astro.url.pathname, siteBase);
+const defaultOg = new URL(SITE.ogImagePath, siteBase).href;
+const ogImageAbsolute = image ?? defaultOg;
+
+const jsonLd = buildDefaultJsonLd();
+const jsonLdSafe = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
+const extraJsonLdSafe = extraJsonLd
+  ? JSON.stringify(extraJsonLd).replace(/</g, "\\u003c")
+  : null;
 ---
 
 <!doctype html>
@@ -19,20 +40,59 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content={SITE.themeColor} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="author" content={SITE.name} />
+    {
+      noindex ? (
+        <meta name="robots" content="noindex, nofollow" />
+      ) : (
+        <meta name="robots" content="index, follow" />
+      )
+    }
+
+    <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    />
+
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+
     <title>{title}</title>
+
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:image" content={ogImageAbsolute} />
+    <meta property="og:image:width" content={String(SITE.ogImageWidth)} />
+    <meta property="og:image:height" content={String(SITE.ogImageHeight)} />
+    <meta property="og:image:alt" content={`${SITE.name} — portfolio preview`} />
+
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageAbsolute} />
+
+    <script type="application/ld+json" set:html={jsonLdSafe} />
+    {
+      extraJsonLdSafe ? (
+        <script type="application/ld+json" set:html={extraJsonLdSafe} />
+      ) : null
+    }
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <slot />
   </body>
 </html>
