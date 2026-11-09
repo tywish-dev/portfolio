@@ -2,13 +2,42 @@
 (function () {
   "use strict";
 
+  /* ---------- Phone menu ---------- */
+  var menuBtn = document.querySelector(".menu-toggle");
+  var nav = document.getElementById("site-nav");
+  if (menuBtn && nav) {
+    document.documentElement.classList.add("js-nav");
+    menuBtn.hidden = false;
+    menuBtn.addEventListener("click", function () {
+      var open = menuBtn.getAttribute("aria-expanded") !== "true";
+      menuBtn.setAttribute("aria-expanded", String(open));
+      nav.classList.toggle("is-open", open);
+    });
+    nav.addEventListener("click", function (e) {
+      if (e.target.closest("a")) {
+        menuBtn.setAttribute("aria-expanded", "false");
+        nav.classList.remove("is-open");
+      }
+    });
+  }
+
   /* ---------- Open / closed status (shop runs on Central time) ---------- */
-  // Day index: 0 = Sunday … 6 = Saturday. [open hour, close hour], 24h.
-  var HOURS = { 0: [8, 19], 1: [8, 21], 2: [8, 21], 3: [8, 21], 4: [8, 21], 5: [8, 21], 6: [8, 21] };
+  // Day index: 0 = Sunday … 6 = Saturday. [open hour, close hour], 24h; 24 = midnight.
+  // Sunday follows the Google listing (8 AM to midnight, checked 2026-11-09); Yelp still says 7 PM.
+  var HOURS = { 0: [8, 24], 1: [8, 21], 2: [8, 21], 3: [8, 21], 4: [8, 21], 5: [8, 21], 6: [8, 21] };
   var DAY_INDEX = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
   var DAY_NAME = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+  // Holidays when Google shows "hours might differ" (Central time dates). Update with the owner's real holiday hours.
+  var HOLIDAYS = ["2026-11-11", "2026-11-26", "2026-12-24", "2026-12-25", "2026-12-31", "2027-01-01", "2027-01-18", "2027-02-09"];
+
+  function dayAfter(iso) {
+    var p = iso.split("-");
+    return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + 1)).toISOString().slice(0, 10);
+  }
+
   function formatHour(h) {
+    if (h === 24) return "midnight";
     if (h === 0) return "12 AM";
     if (h === 12) return "12 PM";
     return h > 12 ? (h - 12) + " PM" : h + " AM";
@@ -17,11 +46,15 @@
   function centralNow() {
     try {
       var parts = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "numeric", hourCycle: "h23"
+        timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "numeric", hourCycle: "h23",
+        year: "numeric", month: "2-digit", day: "2-digit"
       }).formatToParts(new Date());
       var out = {};
       parts.forEach(function (p) { out[p.type] = p.value; });
-      return { day: DAY_INDEX[out.weekday], minutes: parseInt(out.hour, 10) * 60 + parseInt(out.minute, 10) };
+      return {
+        day: DAY_INDEX[out.weekday], minutes: parseInt(out.hour, 10) * 60 + parseInt(out.minute, 10),
+        date: out.year + "-" + out.month + "-" + out.day
+      };
     } catch (e) {
       return null;
     }
@@ -34,8 +67,13 @@
     var today = HOURS[now.day];
     var open = today[0] * 60, close = today[1] * 60;
     var msg, state;
+    var holiday = HOLIDAYS.indexOf(now.date) !== -1;
 
-    if (now.minutes >= open && now.minutes < close) {
+    if (holiday) {
+      // Google marks these days "hours might differ", so the site doesn't promise an open sign.
+      state = "holiday";
+      msg = "Holiday: hours may differ";
+    } else if (now.minutes >= open && now.minutes < close) {
       state = "open";
       msg = "Open now until " + formatHour(today[1]);
     } else if (now.minutes < open) {
@@ -44,24 +82,34 @@
     } else {
       state = "closed";
       var next = (now.day + 1) % 7;
-      msg = "Closed now. Opens " + DAY_NAME[next] + " at " + formatHour(HOURS[next][0]);
+      msg = HOLIDAYS.indexOf(dayAfter(now.date)) !== -1
+        ? "Closed now. Tomorrow is a holiday"
+        : "Closed now. Opens " + DAY_NAME[next] + " at " + formatHour(HOURS[next][0]);
     }
     els.forEach(function (el) {
       el.setAttribute("data-state", state);
       el.querySelector(".status-text").textContent = msg;
     });
+    var flatAlt = document.querySelector(".flat-alt a");
+    if (flatAlt) {
+      flatAlt.textContent = state !== "closed"
+        ? "Can't call right now? Leave your number and we'll call you back"
+        : "Shop closed? Leave your number and we'll call you when we open";
+    }
 
     var rows = document.querySelectorAll("#hours tr[data-day]");
     rows.forEach(function (row) {
       var isToday = Number(row.getAttribute("data-day")) === now.day;
       row.classList.toggle("is-today", isToday);
       var tag = row.querySelector(".today-tag");
-      if (isToday && !tag) {
-        tag = document.createElement("span");
-        tag.className = "today-tag";
-        tag.textContent = "Today";
-        row.querySelector("th").appendChild(tag);
-      } else if (!isToday && tag) {
+      if (isToday) {
+        if (!tag) {
+          tag = document.createElement("span");
+          tag.className = "today-tag";
+          row.querySelector("th").appendChild(tag);
+        }
+        tag.textContent = holiday ? "Today: holiday" : "Today";
+      } else if (tag) {
         tag.remove();
       }
     });
@@ -88,38 +136,60 @@
     T: ["Temporary spare", "Meant to get you to a shop, not for everyday driving."]
   };
 
-  var SIZE_RE = /^(P|LT|ST|T)?\s*(\d{3})\s*\/\s*(\d{2})\s*(ZR|R|D|B)?\s*-?\s*(\d{2}(?:\.\d)?)\s*(?:(\d{2,3})(?:\s*\/\s*(\d{2,3}))?\s*\(?([LMNPQRSTUHVWY])\)?)?$/;
+  // Metric sizes, with or without the slash and the R: 225/65R17 98H, 205 55 16, 2055516, LT245/75R16 120/116S.
+  var LOAD_SPEED = "(?:(\\d{2,3})(?:\\s*\\/\\s*(\\d{2,3}))?\\s*\\(?([LMNPQRSTUHVWY])\\)?)?";
+  var METRIC_RE = new RegExp("^(P|LT|ST|T)?\\s*(\\d{3})\\s*[\\/\\s-]?\\s*(\\d{2})\\s*(ZR|R|D|B)?\\s*[-\\s]?\\s*(\\d{2}(?:\\.\\d)?)\\s*(LT)?\\s*" + LOAD_SPEED + "$");
+  // Flotation (inch) sizes for trucks: 35x12.50R20, 33X12.50R15LT 108Q.
+  var FLOAT_RE = new RegExp("^(\\d{2}(?:\\.\\d)?)\\s*[X×]\\s*(\\d{1,2}(?:\\.\\d{1,2})?)\\s*(R|D|B|-)?\\s*(\\d{2}(?:\\.\\d)?)\\s*(LT)?\\s*" + LOAD_SPEED + "$");
 
   function parseSize(raw) {
     var s = raw.toUpperCase().replace(/\s+/g, " ").trim();
-    var m = s.match(SIZE_RE);
-    if (!m) return null;
-    return {
-      type: m[1] || "", width: +m[2], aspect: +m[3], build: m[4] || "R",
-      rim: m[5], load: m[6] ? +m[6] : null, load2: m[7] ? +m[7] : null, speed: m[8] || ""
-    };
+    var m = s.match(METRIC_RE);
+    if (m) {
+      return {
+        kind: "metric", type: m[1] || m[6] || "", width: +m[2], aspect: +m[3], build: m[4] || "R",
+        rim: m[5], load: m[7] ? +m[7] : null, load2: m[8] ? +m[8] : null, speed: m[9] || ""
+      };
+    }
+    m = s.match(FLOAT_RE);
+    if (m) {
+      return {
+        kind: "float", type: m[5] || "", dia: m[1], widthIn: m[2], build: !m[3] || m[3] === "-" ? "R" : m[3],
+        rim: m[4], load: m[6] ? +m[6] : null, load2: m[7] ? +m[7] : null, speed: m[8] || ""
+      };
+    }
+    return null;
+  }
+
+  function loadSpeed(t) {
+    return t.load ? " " + t.load + (t.load2 ? "/" + t.load2 : "") + t.speed : "";
   }
 
   function normalized(t) {
-    var out = t.type + t.width + "/" + t.aspect + t.build + t.rim;
-    if (t.load) out += " " + t.load + (t.load2 ? "/" + t.load2 : "") + t.speed;
-    return out;
+    if (t.kind === "float") return t.dia + "x" + t.widthIn + t.build + t.rim + t.type + loadSpeed(t);
+    return t.type + t.width + "/" + t.aspect + t.build + t.rim + loadSpeed(t);
   }
 
   function oneDecimal(n) { return (Math.round(n * 10) / 10).toFixed(1); }
 
   function describe(t) {
     var rows = [];
+    if (t.kind === "float") {
+      rows.push(["dia", t.dia, "Overall height: " + t.dia + " inches", "From the ground to the top of the tire, about " + Math.round(t.dia * 25.4) + " mm."]);
+      rows.push(["width", t.widthIn, "Width: " + parseFloat(t.widthIn) + " inches", "About " + Math.round(t.widthIn * 25.4) + " mm across the tread."]);
+    } else {
     if (t.type && TYPE_TEXT[t.type]) rows.push(["type", t.type, TYPE_TEXT[t.type][0], TYPE_TEXT[t.type][1]]);
     rows.push(["width", String(t.width), "Width: " + t.width + " mm", "About " + oneDecimal(t.width / 25.4) + " inches across the tread."]);
     var sidewall = t.width * t.aspect / 100;
     rows.push(["aspect", String(t.aspect), "Sidewall height: " + t.aspect + "% of the width",
       "About " + Math.round(sidewall) + " mm (" + oneDecimal(sidewall / 25.4) + " in) from the wheel to the tread."]);
+    }
     if (t.build === "ZR") rows.push(["build", "ZR", "Radial, rated for high speed", "Built for speeds above 149 mph."]);
     else if (t.build === "R") rows.push(["build", "R", "Radial construction", "Nearly every car tire made today is radial."]);
     else rows.push(["build", t.build, "Bias-ply construction", "Mostly found on trailers and older vehicles."]);
     var article = /^(8|11|18)(\.|$)/.test(t.rim) ? "an " : "a ";
     rows.push(["rim", t.rim, "Fits " + article + t.rim + "-inch wheel", "A new tire has to match this number."]);
+    if (t.kind === "float" && t.type && TYPE_TEXT[t.type]) rows.push(["type", t.type, TYPE_TEXT[t.type][0], TYPE_TEXT[t.type][1]]);
     if (t.load) {
       var kg = LOAD_KG[t.load];
       var loadLabel = t.load2 ? t.load + "/" + t.load2 : String(t.load);
@@ -142,6 +212,7 @@
   var sizeParts = document.getElementById("size-parts");
   var sizeHeading = document.getElementById("size-heading");
   var sizeUse = document.getElementById("size-use");
+  var sizeAnyway = document.getElementById("size-anyway");
   var currentSize = "";
 
   function showSizeError(message) {
@@ -154,6 +225,7 @@
   function clearSizeError() {
     sizeError.hidden = true;
     sizeError.textContent = "";
+    if (sizeAnyway) sizeAnyway.parentNode.hidden = true;
     sizeInput.removeAttribute("aria-invalid");
   }
 
@@ -171,10 +243,10 @@
       seg.className = "seg";
       seg.textContent = row[1];
       sizeCode.appendChild(seg);
-      if (row[0] === "width") {
+      if ((row[0] === "width" && t.kind !== "float") || row[0] === "dia") {
         var slash = document.createElement("span");
         slash.className = "seg";
-        slash.textContent = "/";
+        slash.textContent = row[0] === "dia" ? "x" : "/";
         sizeCode.appendChild(slash);
       }
     });
@@ -211,7 +283,8 @@
       }
       var parsed = parseSize(value);
       if (!parsed) {
-        showSizeError("That doesn't look like a tire size. It usually looks like 225/65R17. You can also call (504) 264-7830 and we'll help you find it.");
+        showSizeError("That doesn't look like a tire size. It usually looks like 225/65R17, or 35x12.50R20 on a truck. You can also call (504) 264-7830 and we'll help you find it.");
+        if (sizeAnyway) sizeAnyway.parentNode.hidden = false;
         return;
       }
       clearSizeError();
@@ -223,10 +296,33 @@
     });
   }
 
+  if (sizeAnyway) {
+    // A size we can't read still goes to the shop as typed: a person will read it.
+    sizeAnyway.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.getElementById("q-size").value = sizeInput.value.trim();
+      document.getElementById("price").scrollIntoView();
+      document.getElementById("q-phone").focus({ preventScroll: true });
+    });
+  }
+
   if (sizeUse) {
     sizeUse.addEventListener("click", function () {
       var target = document.getElementById("q-size");
       target.value = currentSize;
+      document.getElementById("price").scrollIntoView();
+      document.getElementById("q-phone").focus({ preventScroll: true });
+    });
+  }
+
+  /* ---------- Quick price entry under the hero: carries the size into the full request ---------- */
+  var qpForm = document.getElementById("qp-form");
+  if (qpForm) {
+    qpForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var raw = document.getElementById("qp-size").value.trim();
+      var parsed = raw ? parseSize(raw) : null;
+      if (raw) document.getElementById("q-size").value = parsed ? normalized(parsed) : raw;
       document.getElementById("price").scrollIntoView();
       document.getElementById("q-phone").focus({ preventScroll: true });
     });

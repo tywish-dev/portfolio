@@ -15,6 +15,7 @@
   <link rel="preload" href="assets/fonts/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/site.css">
+  <script>document.documentElement.classList.add("js-nav")</script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -36,7 +37,7 @@
     "hasMap": "https://maps.google.com/?cid=9202942361306912708",
     "openingHoursSpecification": [
       { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "08:00", "closes": "21:00" },
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "08:00", "closes": "19:00" }
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "08:00", "closes": "00:00" }
     ],
     "sameAs": ["https://www.yelp.com/biz/tire-zone-nola-gretna"]
   }
@@ -46,13 +47,14 @@
   <a class="skip" href="#main">Skip to main content</a>
 
   <aside class="concept-note" aria-label="About this preview">
-    <p>Concept preview made for Tire Zone NOLA by Samet Yilmaz. Not the official site, and the forms don't send anything.</p>
+    <p>Concept preview for Tire Zone NOLA by Samet Yilmaz. Not the official site, and forms don't send yet.</p>
   </aside>
 
   <header class="site-header">
     <div class="wrap header-row">
       <a class="wordmark" href="./">Tire Zone <span>NOLA</span></a>
-      <nav class="site-nav" aria-label="Main">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" hidden>Menu</button>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
         <ul>
           <li><a href="#services">Services</a></li>
           <li><a href="#tire-size">Tire sizes</a></li>
@@ -70,14 +72,14 @@
         <div class="hero-sign-wrap">
           <p class="status" id="open-status" data-open-status data-state="unknown">
             <span class="status-dot" aria-hidden="true"></span>
-            <span class="status-text">Open 7 days: Monday to Saturday 8 AM to 9 PM, Sunday 8 AM to 7 PM</span>
+            <span class="status-text">Open 7 days a week</span>
           </p>
           <div class="hero-sign">
-            <h1 id="hero-title">Tires, flats and alignments on the Westbank Expressway</h1>
-            <p class="lede">New and used tires, flat repair, alignments and rims at 725 Westbank Expy in Gretna.</p>
+            <h1 id="hero-title">New and used tires on the Westbank Expressway</h1>
+            <p class="lede">Flat repair, alignments and rims too, at 725 Westbank Expy in Gretna.</p>
             <div class="actions">
               <a class="btn btn-plate" href="tel:+15042647830">Call (504) 264-7830</a>
-              <a class="btn btn-ghost" href="#price">Get a tire price</a>
+              <a class="btn btn-ghost" href="#price">Get a price</a>
             </div>
           </div>
           <p class="rating">
@@ -89,7 +91,7 @@
               <g class="stars-empty"><use href="#tz-star"/><use href="#tz-star" x="24"/><use href="#tz-star" x="48"/><use href="#tz-star" x="72"/><use href="#tz-star" x="96"/></g>
               <g clip-path="url(#tz-stars-fill)"><use href="#tz-star"/><use href="#tz-star" x="24"/><use href="#tz-star" x="48"/><use href="#tz-star" x="72"/><use href="#tz-star" x="96"/></g>
             </svg>
-            <a href="https://maps.google.com/?cid=9202942361306912708"><span class="rating-score">4.9</span> out of 5 from 569 Google reviews</a>
+            <a href="https://maps.google.com/?cid=9202942361306912708"><span class="rating-score">4.9</span> <span class="rating-text">out of 5 from 569 Google reviews</span></a>
             <span>as of November 2026</span>
           </p>
         </div>
@@ -143,12 +145,43 @@
     </section>
     <div class="curb" aria-hidden="true"></div>
 
+    <section id="quick-price" class="quick-price" aria-labelledby="qp-title">
+      <div class="wrap qp-grid">
+        <h2 id="qp-title">Get a price on tires</h2>
+        <form class="qp-form" id="qp-form" novalidate>
+          <label for="qp-size">Tire size or vehicle</label>
+          <div class="size-row">
+            <input id="qp-size" name="size" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="225/65R17 or Civic" aria-describedby="qp-hint">
+            <button type="submit" class="btn btn-sign">Ask for a price</button>
+          </div>
+          <p class="hint" id="qp-hint">The size is printed on the side of your tire. <a href="#tire-size">How to read it</a></p>
+        </form>
+      </div>
+    </section>
+
     <section id="services" class="section" aria-labelledby="services-title">
       <div class="wrap">
         <div class="section-head">
           <h2 id="services-title">What we do</h2>
           <p>Not sure what your car needs? Pull in or call and tell us what's going on.</p>
         </div>
+
+        <aside class="flat-sign" aria-labelledby="flat-title">
+          <div class="flat-main">
+            <h3 id="flat-title">Got a flat?</h3>
+            <ul>
+              <li>Put the spare on, or drive as little as you can. The longer a tire runs flat, the less likely it can be saved.</li>
+              <li>A nail or screw in the tread can usually be repaired if the hole is no wider than ¼&nbsp;inch (6&nbsp;mm).</li>
+              <li>Damage at the edge of the tread or in the sidewall can't be repaired safely. That tire has to be replaced, and a used tire in your size can do the job.</li>
+            </ul>
+          </div>
+          <div class="flat-act">
+            <p class="flat-status" data-open-status data-state="unknown"><span class="status-text">Open 7 days a week</span></p>
+            <a class="btn btn-ink" href="tel:+15042647830">Call (504) 264-7830</a>
+            <p class="flat-alt"><a href="#price">Leave your number and we'll call you back</a></p>
+            <p class="flat-source">Repair limits from the <a href="https://www.ustires.org/tire-care-safety/tire-repair-basics">U.S. Tire Manufacturers Association</a>. Only a look at the tire can tell for sure.</p>
+          </div>
+        </aside>
 
         <div class="service-groups">
           <div class="service-group">
@@ -164,18 +197,6 @@
           </div>
 
           <div class="service-side">
-            <aside class="flat-sign" aria-labelledby="flat-title">
-              <h3 id="flat-title">Got a flat?</h3>
-              <ul>
-                <li>Put the spare on, or drive as little as you can. The longer a tire runs flat, the less likely it can be saved.</li>
-                <li>A nail or screw in the tread can usually be repaired if the hole is no wider than ¼&nbsp;inch (6&nbsp;mm).</li>
-                <li>Damage at the edge of the tread or in the sidewall can't be repaired safely. That tire has to be replaced, and a used tire in your size can do the job.</li>
-              </ul>
-              <p class="flat-status" data-open-status data-state="unknown"><span class="status-text">Open 7 days: Monday to Saturday 8 AM to 9 PM, Sunday 8 AM to 7 PM</span></p>
-              <a class="btn btn-ink" href="tel:+15042647830">Call (504) 264-7830</a>
-              <p class="flat-source">Repair limits from the <a href="https://www.ustires.org/tire-care-safety/tire-repair-basics">U.S. Tire Manufacturers Association</a>. Only a look at the tire can tell for sure.</p>
-            </aside>
-
             <div class="service-group">
               <h3>Wheels</h3>
               <dl class="service-list">
@@ -189,28 +210,8 @@
                 <div><dt>Wash and detailing</dt><dd>Inside and out.</dd></div>
               </dl>
             </div>
+            <p class="group-action"><a href="tel:+15042647830">Call about alignment, rims or detailing</a></p>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section open-late" aria-labelledby="late-title">
-      <div class="wrap late-grid">
-        <div class="late-copy">
-          <h2 id="late-title">Open seven days, until 9 PM most nights</h2>
-          <p>Flats don't keep business hours. Come by after work on a weekday or on a Sunday afternoon for new or used tires, a flat repair, an alignment or rim work.</p>
-          <p class="late-links">
-            <a href="https://maps.google.com/?cid=9202942361306912708">Read the 569 reviews on Google</a>
-            <a href="https://www.yelp.com/biz/tire-zone-nola-gretna">See Tire Zone on Yelp</a>
-          </p>
-        </div>
-        <div class="distance-sign">
-          <dl>
-            <div><dt>Google rating from 569 reviews</dt><dd>4.9</dd></div>
-            <div><dt>Days open each week</dt><dd>7</dd></div>
-            <div><dt>Closing time, Monday to Saturday</dt><dd>9 PM</dd></div>
-            <div><dt>Closing time, Sunday</dt><dd>7 PM</dd></div>
-          </dl>
         </div>
       </div>
     </section>
@@ -230,7 +231,8 @@
               <button type="submit" class="btn btn-light">Explain my size</button>
             </div>
             <p id="size-hint" class="hint">Can't find it? The sticker inside your driver's door lists the size your car came with.</p>
-            <p id="size-error" class="field-error" hidden></p>
+            <p id="size-error" class="field-error" role="alert" hidden></p>
+            <p class="size-anyway" hidden><a href="#price" id="size-anyway">Send what you typed with a price request</a></p>
           </form>
         </div>
 
@@ -267,7 +269,7 @@
           <div class="field">
             <label for="q-phone">Phone number</label>
             <input id="q-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="q-phone-error">
-            <p id="q-phone-error" class="field-error" hidden></p>
+            <p id="q-phone-error" class="field-error" role="alert" hidden></p>
           </div>
           <div class="field full">
             <label for="q-size">Tire size or vehicle <span class="optional">(optional)</span></label>
@@ -332,12 +334,11 @@
                 <tr data-day="4"><th scope="row">Thursday</th><td>8 AM to 9 PM</td></tr>
                 <tr data-day="5"><th scope="row">Friday</th><td>8 AM to 9 PM</td></tr>
                 <tr data-day="6"><th scope="row">Saturday</th><td>8 AM to 9 PM</td></tr>
-                <tr data-day="0"><th scope="row">Sunday</th><td>8 AM to 7 PM</td></tr>
+                <tr data-day="0"><th scope="row">Sunday</th><td>8 AM to midnight</td></tr>
               </tbody>
             </table>
             <div class="visit-notes">
               <p>Holiday hours can change, so call ahead on holidays.</p>
-              <p>Free Wi-Fi while you wait.</p>
             </div>
           </div>
         </div>

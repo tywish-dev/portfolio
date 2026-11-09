@@ -9,8 +9,9 @@
   <meta name="theme-color" content="#00653a">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/site.css">
+  <script>document.documentElement.classList.add("js-nav")</script>
 </head>
-<body>
+<body class="has-quick-bar">
   <a class="skip" href="#main">Skip to main content</a>
 
   <aside class="concept-note" aria-label="About this preview">
@@ -20,7 +21,8 @@
   <header class="site-header">
     <div class="wrap header-row">
       <a class="wordmark" href="../">Tire Zone <span>NOLA</span></a>
-      <nav class="site-nav" aria-label="Main">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" hidden>Menu</button>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
         <ul>
           <li><a href="../#services">Services</a></li>
           <li><a href="../#tire-size">Tire sizes</a></li>
@@ -83,5 +85,12 @@
       <p class="fineprint">Concept preview designed by Samet Yilmaz for Tire Zone NOLA.</p>
     </div>
   </footer>
+  <nav class="quick-bar" aria-label="Quick actions">
+    <a class="btn btn-sign" href="tel:+15042647830">Call</a>
+    <a class="btn btn-ghost" href="../#price">Get a price</a>
+    <a class="btn btn-ghost" href="https://www.google.com/maps/dir/?api=1&amp;destination=Tire+Zone+NOLA%2C+725+Westbank+Expy%2C+Gretna%2C+LA+70053">Directions</a>
+  </nav>
+
+  <script src="../assets/site.js" defer></script>
 </body>
 </html>
