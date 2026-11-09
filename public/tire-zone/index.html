@@ -46,7 +46,7 @@
   <a class="skip" href="#main">Skip to main content</a>
 
   <aside class="concept-note" aria-label="About this preview">
-    <p>Concept preview prepared for Tire Zone NOLA by Samet Yilmaz. This is not the official Tire Zone website, and the forms on this page do not send anything.</p>
+    <p>Concept preview made for Tire Zone NOLA by Samet Yilmaz. Not the official site, and the forms don't send anything.</p>
   </aside>
 
   <header class="site-header">
@@ -68,19 +68,27 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="wrap hero-grid">
         <div class="hero-sign-wrap">
-          <p class="status" id="open-status" data-state="unknown">
+          <p class="status" id="open-status" data-open-status data-state="unknown">
             <span class="status-dot" aria-hidden="true"></span>
             <span class="status-text">Open 7 days: Monday to Saturday 8 AM to 9 PM, Sunday 8 AM to 7 PM</span>
           </p>
           <div class="hero-sign">
             <h1 id="hero-title">Tires, flats and alignments on the Westbank Expressway</h1>
-            <p class="lede">New and used tires to fit your budget, patch and plug flat repairs, wheel alignments and rim repair. Pull in at 725 Westbank Expy in Gretna, or call ahead with your tire size.</p>
+            <p class="lede">New and used tires, flat repair, alignments and rims at 725 Westbank Expy in Gretna.</p>
             <div class="actions">
               <a class="btn btn-plate" href="tel:+15042647830">Call (504) 264-7830</a>
-              <a class="btn btn-ghost" href="https://www.google.com/maps/dir/?api=1&amp;destination=Tire+Zone+NOLA%2C+725+Westbank+Expy%2C+Gretna%2C+LA+70053">Get directions</a>
+              <a class="btn btn-ghost" href="#price">Get a tire price</a>
             </div>
           </div>
           <p class="rating">
+            <svg class="stars" viewBox="0 0 120 24" aria-hidden="true" focusable="false">
+              <defs>
+                <path id="tz-star" d="M12 1.6l3.1 6.5 7.1.9-5.2 4.9 1.3 7.1L12 17.5l-6.3 3.5L7 13.9 1.8 9l7.1-.9z"/>
+                <clipPath id="tz-stars-fill"><rect width="117.6" height="24"/></clipPath>
+              </defs>
+              <g class="stars-empty"><use href="#tz-star"/><use href="#tz-star" x="24"/><use href="#tz-star" x="48"/><use href="#tz-star" x="72"/><use href="#tz-star" x="96"/></g>
+              <g clip-path="url(#tz-stars-fill)"><use href="#tz-star"/><use href="#tz-star" x="24"/><use href="#tz-star" x="48"/><use href="#tz-star" x="72"/><use href="#tz-star" x="96"/></g>
+            </svg>
             <a href="https://maps.google.com/?cid=9202942361306912708"><span class="rating-score">4.9</span> out of 5 from 569 Google reviews</a>
             <span>as of November 2026</span>
           </p>
@@ -152,9 +160,22 @@
               <div><dt>Mounting and balancing</dt><dd>New or used tires put on your wheels and balanced so they ride smooth.</dd></div>
               <div><dt>Tire pressure sensors</dt><dd>TPMS repair for when the tire light on your dash won't go off.</dd></div>
             </dl>
+            <p class="group-action"><a href="#price">Get a price on new or used tires</a></p>
           </div>
 
           <div class="service-side">
+            <aside class="flat-sign" aria-labelledby="flat-title">
+              <h3 id="flat-title">Got a flat?</h3>
+              <ul>
+                <li>Put the spare on, or drive as little as you can. The longer a tire runs flat, the less likely it can be saved.</li>
+                <li>A nail or screw in the tread can usually be repaired if the hole is no wider than ¼&nbsp;inch (6&nbsp;mm).</li>
+                <li>Damage at the edge of the tread or in the sidewall can't be repaired safely. That tire has to be replaced, and a used tire in your size can do the job.</li>
+              </ul>
+              <p class="flat-status" data-open-status data-state="unknown"><span class="status-text">Open 7 days: Monday to Saturday 8 AM to 9 PM, Sunday 8 AM to 7 PM</span></p>
+              <a class="btn btn-ink" href="tel:+15042647830">Call (504) 264-7830</a>
+              <p class="flat-source">Repair limits from the <a href="https://www.ustires.org/tire-care-safety/tire-repair-basics">U.S. Tire Manufacturers Association</a>. Only a look at the tire can tell for sure.</p>
+            </aside>
+
             <div class="service-group">
               <h3>Wheels</h3>
               <dl class="service-list">
@@ -169,6 +190,27 @@
               </dl>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section open-late" aria-labelledby="late-title">
+      <div class="wrap late-grid">
+        <div class="late-copy">
+          <h2 id="late-title">Open seven days, until 9 PM most nights</h2>
+          <p>Flats don't keep business hours. Come by after work on a weekday or on a Sunday afternoon for new or used tires, a flat repair, an alignment or rim work.</p>
+          <p class="late-links">
+            <a href="https://maps.google.com/?cid=9202942361306912708">Read the 569 reviews on Google</a>
+            <a href="https://www.yelp.com/biz/tire-zone-nola-gretna">See Tire Zone on Yelp</a>
+          </p>
+        </div>
+        <div class="distance-sign">
+          <dl>
+            <div><dt>Google rating from 569 reviews</dt><dd>4.9</dd></div>
+            <div><dt>Days open each week</dt><dd>7</dd></div>
+            <div><dt>Closing time, Monday to Saturday</dt><dd>9 PM</dd></div>
+            <div><dt>Closing time, Sunday</dt><dd>7 PM</dd></div>
+          </dl>
         </div>
       </div>
     </section>
@@ -271,6 +313,7 @@
             <div class="guide-sign-inner">
               <p class="sign-name">Tire Zone NOLA</p>
               <address>725 Westbank Expy<br>Gretna, LA 70053</address>
+              <p class="sign-area">On the Westbank, close to Algiers, Terrytown, Harvey and Marrero.</p>
               <p class="sign-links">
                 <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Tire+Zone+NOLA%2C+725+Westbank+Expy%2C+Gretna%2C+LA+70053">Directions in Google Maps</a>
                 <a href="https://maps.apple.com/?daddr=725+Westbank+Expy,+Gretna,+LA+70053&amp;q=Tire+Zone+NOLA">Directions in Apple Maps</a>
@@ -334,7 +377,8 @@
   </footer>
 
   <nav class="quick-bar" aria-label="Quick actions">
-    <a class="btn btn-sign" href="tel:+15042647830">Call the shop</a>
+    <a class="btn btn-sign" href="tel:+15042647830">Call</a>
+    <a class="btn btn-ghost" href="#price">Get a price</a>
     <a class="btn btn-ghost" href="https://www.google.com/maps/dir/?api=1&amp;destination=Tire+Zone+NOLA%2C+725+Westbank+Expy%2C+Gretna%2C+LA+70053">Directions</a>
   </nav>
 

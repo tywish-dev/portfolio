@@ -29,9 +29,8 @@
 
   function updateStatus() {
     var now = centralNow();
-    var el = document.getElementById("open-status");
-    if (!now || !el || now.day === undefined) return;
-    var text = el.querySelector(".status-text");
+    var els = document.querySelectorAll("[data-open-status]");
+    if (!now || !els.length || now.day === undefined) return;
     var today = HOURS[now.day];
     var open = today[0] * 60, close = today[1] * 60;
     var msg, state;
@@ -45,10 +44,12 @@
     } else {
       state = "closed";
       var next = (now.day + 1) % 7;
-      msg = "Closed now. Opens tomorrow (" + DAY_NAME[next] + ") at " + formatHour(HOURS[next][0]);
+      msg = "Closed now. Opens " + DAY_NAME[next] + " at " + formatHour(HOURS[next][0]);
     }
-    el.setAttribute("data-state", state);
-    text.textContent = msg;
+    els.forEach(function (el) {
+      el.setAttribute("data-state", state);
+      el.querySelector(".status-text").textContent = msg;
+    });
 
     var rows = document.querySelectorAll("#hours tr[data-day]");
     rows.forEach(function (row) {
