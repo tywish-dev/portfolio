@@ -23,6 +23,22 @@
           "value": "camera=(), microphone=(), geolocation=()"
         }
       ]
+    },
+    {
+      "source": "/:demo(tire-zone)/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/:demo(tire-zone)",
+      "destination": "/:demo/",
+      "permanent": true
     }
   ]
 }
